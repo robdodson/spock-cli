@@ -23,7 +23,9 @@
     "node": ">=4"
   },
   "dependencies": {
+    "browserify": "^12.0.1",
     "crisper": "^2.0.1",
+    "del": "^2.2.0",
     "find-requires": "^0.2.2",
     "fs-extra": "^0.26.3",
     "globby": "^4.0.0",

@@ -16,6 +16,9 @@ const vulcanize = require('./lib/vulcanize-task');
 const crisper = require('./lib/crisper-task');
 const rewriteRequires = require('./lib/rewrite-task');
 const shim = require('./lib/shim-task');
+const browserify = require('./lib/browserify-task');
+const copy = require('./lib/copy-task');
+const del = require('del');
 
 module.exports = function(bundle, options) {
 
@@ -47,10 +50,20 @@ module.exports = function(bundle, options) {
     .then(() => {
       return shim(tmpDir, pattern, options.skipShim);
     })
+    .then((shimFile) => {
+      return browserify(shimFile, htmlOutputTmp.replace('.html', '.js'), options.skipBrowserify);
+    })
+    .then(() => {
+      return copy(tmpDir, prefix, htmlOutput);
+    })
+    .then(() => {
+      return del(tmpDir);
+    })
     .catch((err) => {
-      console.error('aw fuck! ', err);
+      console.error('oh no! ', err);
+      return Promise.reject(err);
     });
 
-  // rewriteRequires(globby.sync('app/.tmp/elements*.js'), entryFile);
+    // TODO: How come .finally doesn't work??
 
 };
