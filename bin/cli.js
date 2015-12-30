@@ -10,15 +10,21 @@ const cli = meow(`
 	  $ spock <path>
 
   Options
-    -j, --js Output JavaScript file name. Defaults to elements.js
-    -h, --html Output HTML file name. Defaults to elements.html
+    -o, --output Output file path. Defaults to dist/elements/elements.{html,js}
+    --skip-vulcanize Skips the vulcanization step
+    --skip-crisper Skips the crisper step
+		--skip-rewrite Skips the rewrite step
+		--skip-shim Skips the shim step
+    --skip-browserify Skips the browserify step
 
 	Examples
-	  $ spock elements.html -o dist/elements/elements.html
+	  $ spock app/elements/elements.html -o dist/elements/bundle.html
 `, {
 	alias: {
-    j: 'js',
-    h: 'html'
+    o: 'output'
+  },
+  default: {
+    output: 'dist/elements/elements.html'
   }
 });
 
@@ -29,4 +35,4 @@ if (cli.input.length === 0) {
 	process.exit(1);
 }
 
-spock(cli.input[0]);
+spock(cli.input[0], cli.flags);

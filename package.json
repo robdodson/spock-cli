@@ -1,5 +1,5 @@
 {
-  "name": "spock",
+  "name": "spock-cli",
   "version": "1.0.0",
   "description": "ES6 Modules + Polymer",
   "main": "index.js",
@@ -25,6 +25,7 @@
   "dependencies": {
     "crisper": "^2.0.1",
     "find-requires": "^0.2.2",
+    "fs-extra": "^0.26.3",
     "globby": "^4.0.0",
     "meow": "^3.6.0",
     "path-exists": "^2.1.0",

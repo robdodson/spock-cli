@@ -8,62 +8,49 @@
  * subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
  */
 
-const fs = require('fs');
+'use strict';
+
 const path = require('path');
-const globby = require('globby');
-const findRequires = require('find-requires');
 const pathExists = require('path-exists');
+const vulcanize = require('./lib/vulcanize-task');
+const crisper = require('./lib/crisper-task');
+const rewriteRequires = require('./lib/rewrite-task');
+const shim = require('./lib/shim-task');
 
-function rewriteRequires(files, bundlePath) {
-  files.forEach(function(file) {
-    var src = fs.readFileSync(file, 'utf-8');
-    var requires = findRequires(src); // there's an npm module for everything! :)
-    var assetPath = findAssetPath(src); // ...except this...
-    if (!assetPath) {
-      return;
-    }
-    var elementDir = findElementDir(bundlePath, assetPath);
+module.exports = function(bundle, options) {
 
-    // TODO: I guess this means your elements can't be in the same directory as
-    // elements.html?
-    if (requires.length && assetPath) {
-      requires.forEach(function(req) {
-        var modulePath = findModulePath(req, elementDir);
-        src = src.replace(requires[0], modulePath);
-      });
-    }
-
-    fs.writeFileSync(file, src, 'utf-8');
-  });
-}
-
-function findAssetPath(file) {
-  var re = /^\/\* assetpath="(.*)"/;
-  var matches = re.exec(file);
-  if (matches) {
-    return matches[1];
-  } else {
-    return false;
+  const htmlOutput = path.join(process.cwd(), options.output);
+  const entryFile = path.join(process.cwd(), bundle);
+  // Make sure the passed in entry file is valid
+  if (!pathExists.sync(entryFile)) {
+    return Promise.reject(new Error('Could not find import at: ' + bundle));
   }
-}
+  // Sort out where temporary files will go
+  // This is where we'll put the vulcanized html and
+  // crisper'd js files before we browserify them all back together
+  const htmlOutputTmp = path.resolve(
+    entryFile, '../../.tmp', path.basename(htmlOutput)
+  );
+  const jsOutputTmp = path.basename(htmlOutputTmp, '.html') + '.js';
+  // this is duplicated work (from rewrite task)
+  const tmpDir = path.dirname(htmlOutputTmp);
+  const prefix = path.basename(htmlOutputTmp, '.html');
+  const pattern = prefix + '*.js';
 
-function findElementDir(elementsHTML, assetPath) {
-  return path.join(path.dirname(elementsHTML), assetPath);
-}
+  vulcanize(entryFile, htmlOutputTmp, options.skipVulcanize)
+    .then(vulcanizedHtml => {
+      return crisper(vulcanizedHtml, htmlOutputTmp, jsOutputTmp, options.skipCrisper);
+    })
+    .then(() => {
+      return rewriteRequires(htmlOutputTmp, entryFile, options.skipRewrite);
+    })
+    .then(() => {
+      return shim(tmpDir, pattern, options.skipShim);
+    })
+    .catch((err) => {
+      console.error('aw fuck! ', err);
+    });
 
-function findModulePath(requirePath, elementDir) {
-  return path.resolve(elementDir, requirePath)
-}
-
-module.exports = function(bundle) {
-  'use strict';
-
-  // Make sure the passed in bundle path is valid
-  let fullBundlePath = path.join(process.cwd(), bundle);
-  if (!pathExists.sync(fullBundlePath)) {
-    return Promise.reject(new Error('Could not find bundle: ' + bundle));
-  }
-
-  rewriteRequires(globby.sync('app/.tmp/elements*.js'), fullBundlePath);
+  // rewriteRequires(globby.sync('app/.tmp/elements*.js'), entryFile);
 
 };
