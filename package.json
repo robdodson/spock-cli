@@ -24,7 +24,7 @@
   },
   "dependencies": {
     "browserify": "^12.0.1",
-    "crisper": "^2.0.1",
+    "crisper": "git@github.com:robdodson/crisper.git#848190",
     "del": "^2.2.0",
     "find-requires": "^0.2.2",
     "fs-extra": "^0.26.3",
