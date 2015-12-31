@@ -20,12 +20,12 @@ This is a crazy idea that I thought up one night and should not be used by any o
 
 ## How does it work?
 
-Vulcanize will put all of your elements in the correct order, meaning all of your scripts are also in the correct order. Using a modified version of Crisper, spock will extract every `<script>` it sees in your vulcanized bundle into a standalone file. It then creates a shim file that requires all of these files in the correct order. Finally it browserifies the shim, cleans up after itself, and moves the vulcanzed html and browserified js to your `dist` directory.
+Vulcanize will put all of your elements in the correct order, meaning all of your scripts are also in the correct order. Using a modified version of Crisper, spock will extract every `<script>` it sees in your vulcanized bundle into a standalone file. Using the original location of the `elements.html` it can then rewrite the `require` statements in your files to use the correct pahts to your modules. It then creates a shim file that requires all of these files in the correct order. Then it browserifies the shim, at this point any `require` statements will have their corresponding JS compiled into the bundle. Finally it cleans up after itself, and moves the vulcanized html and browserified js to your `dist` directory.
 
 Here are all the steps in list form:
 
 - Vulcanize all elements into a bundle
-- Walk the bundle, extract every script into its own file (steal the assetPath too)
+- Walk the bundle using crisper, extract every script into its own file (steal the assetPath too)
 - Use assetPath and location of original elements.html to figure out how to rewrite relative require paths
 - Don't rewrite requires that would hit NODE_PATH (i.e. anything coming from node_modules)
 - Create an index shim that requires these files in the correct sequential order
