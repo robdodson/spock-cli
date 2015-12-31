@@ -5,6 +5,6 @@
   "main": "gulpfile.js",
   "devDependencies": {
     "del": "^2.2.0",
-    "gulp": "^3.9.0",
+    "gulp": "^3.9.0"
   }
 }
