@@ -54,15 +54,16 @@ module.exports = function(bundle, options) {
       return browserify(shimFile, htmlOutputTmp.replace('.html', '.js'), options.skipBrowserify);
     })
     .then(() => {
-      return copy(tmpDir, prefix, htmlOutput);
+      return copy(tmpDir, prefix, htmlOutput, options.skipCopy);
     })
     .then(() => {
-      return del(tmpDir);
+      if (options.skipClean) {
+        return Promise.resolve();
+      } else {
+        return del(tmpDir);
+      }
     })
-    .catch((err) => {
-      console.error('oh no! ', err);
-      return Promise.reject(err);
-    });
+    .catch(console.log.bind(console));
 
     // TODO: How come .finally doesn't work??
 

@@ -1,0 +1,14 @@
+{
+  "name": "spock-demo",
+  "description": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "polymer": "polymer/polymer#~1.2.3"
+  }
+}

@@ -16,6 +16,8 @@ const cli = meow(`
 		--skip-rewrite Skips the rewrite step
 		--skip-shim Skips the shim step
     --skip-browserify Skips the browserify step
+    --skip-copy Skips the copy step
+    --skip-clean Skips the clean step
 
 	Examples
 	  $ spock app/elements/elements.html -o dist/elements/bundle.html

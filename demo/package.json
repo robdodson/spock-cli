@@ -1,0 +1,10 @@
+{
+  "name": "spock-demo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "gulpfile.js",
+  "devDependencies": {
+    "del": "^2.2.0",
+    "gulp": "^3.9.0",
+  }
+}
