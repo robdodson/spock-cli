@@ -10,7 +10,7 @@
 
 'use strict';
 
-const fs = require('fs');
+const fs = require('fs-extra');
 const path = require('path');
 const pathExists = require('path-exists');
 const vulcanize = require('./lib/vulcanize-task');
@@ -18,53 +18,42 @@ const crisper = require('./lib/crisper-task');
 const rewriteRequires = require('./lib/rewrite-task');
 const shim = require('./lib/shim-task');
 const browserify = require('./lib/browserify-task');
-const copy = require('./lib/copy-task');
-const del = require('del');
+// const fs = require('fs');
 // const profiler = require('v8-profiler');
 
-module.exports = function(bundle, options) {
+module.exports = function(bundle, opts) {
   // profiler.startProfiling('', true);
-  const htmlOutput = path.join(process.cwd(), options.output);
+  const htmlOutput = path.join(process.cwd(), opts.output);
+  const jsOutput = htmlOutput.replace('.html', '.js');
+  const prefix = path.basename(htmlOutput, '.html'); // used for temp files
   const entryFile = path.join(process.cwd(), bundle);
+
   // Make sure the passed in entry file is valid
   if (!pathExists.sync(entryFile)) {
     return Promise.reject(new Error('Could not find import at: ' + bundle));
   }
-  // Sort out where temporary files will go
-  // This is where we'll put the vulcanized html and
-  // crisper'd js files before we browserify them all back together
-  const htmlOutputTmp = path.resolve(
-    entryFile, '../../.tmp', path.basename(htmlOutput)
-  );
-  const jsOutputTmp = path.basename(htmlOutputTmp, '.html') + '.js';
-  // this is duplicated work (from rewrite task)
-  const tmpDir = path.dirname(htmlOutputTmp);
-  const prefix = path.basename(htmlOutputTmp, '.html');
-  const pattern = prefix + '*.js';
+
+  // Make sure output dir exists, otherwise create it
+  if (!fs.ensureDirSync(path.dirname(htmlOutput))) {
+    fs.mkdirsSync(path.dirname(htmlOutput));
+  }
 
   console.time('spock');
-  vulcanize(entryFile, htmlOutputTmp, options.skipVulcanize)
+  Promise.resolve()
+    .then(() => {
+      return vulcanize(entryFile, opts.skipVulcanize)
+    })
     .then(vulcanizedHtml => {
-      return crisper(vulcanizedHtml, htmlOutputTmp, jsOutputTmp, options.skipCrisper);
+      return crisper(vulcanizedHtml, htmlOutput, opts.skipCrisper);
     })
-    .then(() => {
-      return rewriteRequires(htmlOutputTmp, entryFile, options.skipRewrite);
+    .then((scriptFiles) => {
+      return rewriteRequires(scriptFiles, entryFile, opts.skipRewrite);
     })
-    .then(() => {
-      return shim(tmpDir, pattern, options.skipShim);
+    .then((rewrittenFiles) => {
+      return shim(rewrittenFiles, prefix, opts.skipShim);
     })
     .then((shimFile) => {
-      return browserify(shimFile, htmlOutputTmp.replace('.html', '.js'), options.skipBrowserify);
-    })
-    .then(() => {
-      return copy(tmpDir, prefix, htmlOutput, options.skipCopy);
-    })
-    .then(() => {
-      if (options.skipClean) {
-        return Promise.resolve();
-      } else {
-        return del(tmpDir);
-      }
+      return browserify(shimFile, jsOutput, opts.skipBrowserify);
     })
     .then(() => {
       console.log('Live long and prosper');

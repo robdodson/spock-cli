@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "gulpfile.js",
+  "scripts": {
+    "test": "gulp && spock app/elements/elements.html"
+  },
   "devDependencies": {
     "del": "^2.2.0",
     "gulp": "^3.9.0"
