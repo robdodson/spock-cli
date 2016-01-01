@@ -37,6 +37,7 @@
   "devDependencies": {
     "chai": "^3.4.0",
     "jshint": "^2.6.3",
-    "mocha": "^2.2.3"
+    "mocha": "^2.2.3",
+    "v8-profiler": "^5.5.0"
   }
 }

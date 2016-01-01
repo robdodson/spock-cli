@@ -10,6 +10,7 @@
 
 'use strict';
 
+const fs = require('fs');
 const path = require('path');
 const pathExists = require('path-exists');
 const vulcanize = require('./lib/vulcanize-task');
@@ -19,9 +20,10 @@ const shim = require('./lib/shim-task');
 const browserify = require('./lib/browserify-task');
 const copy = require('./lib/copy-task');
 const del = require('del');
+// const profiler = require('v8-profiler');
 
 module.exports = function(bundle, options) {
-
+  // profiler.startProfiling('', true);
   const htmlOutput = path.join(process.cwd(), options.output);
   const entryFile = path.join(process.cwd(), bundle);
   // Make sure the passed in entry file is valid
@@ -40,6 +42,7 @@ module.exports = function(bundle, options) {
   const prefix = path.basename(htmlOutputTmp, '.html');
   const pattern = prefix + '*.js';
 
+  console.time('spock');
   vulcanize(entryFile, htmlOutputTmp, options.skipVulcanize)
     .then(vulcanizedHtml => {
       return crisper(vulcanizedHtml, htmlOutputTmp, jsOutputTmp, options.skipCrisper);
@@ -65,6 +68,11 @@ module.exports = function(bundle, options) {
     })
     .then(() => {
       console.log('Live long and prosper');
+      console.timeEnd('spock');
+      // var profile = profiler.stopProfiling('');
+      // profile.export(function(err, res) {
+      //   fs.writeFileSync('profile.cpuprofile', res);
+      // });
     })
     .catch(console.log.bind(console));
 
