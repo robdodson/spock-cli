@@ -1,0 +1,15 @@
+{
+  "name": "spock-demo",
+  "description": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "polymer": "polymer/polymer#~1.2.3",
+    "paper-button": "PolymerElements/paper-button#~1.0.11"
+  }
+}

@@ -1,0 +1,23 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="x-foo">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <h2>x-foo element is working</h2>
+    <img src="christmas.png" alt="christmas" width="200" />
+  </template>
+  <script>
+    import { sayHello } from '../../modules/my-module';
+
+    Polymer({
+      is: 'x-foo',
+      attached: () => {
+        sayHello();
+      }
+    });
+  </script>
+</dom-module>

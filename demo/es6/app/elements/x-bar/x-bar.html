@@ -1,0 +1,22 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="x-bar">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <h2>x-bar element is working</h2>
+  </template>
+  <script>
+    import { sayGoodbye } from '../../modules/my-other-module';
+
+    Polymer({
+      is: 'x-bar',
+      attached: () => {
+        sayGoodbye();
+      }
+    });
+  </script>
+</dom-module>

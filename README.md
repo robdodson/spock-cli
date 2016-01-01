@@ -11,7 +11,7 @@ This is a crazy idea that I thought up one night and should not be used by any o
 - Clone the project
 - `cd` into `spock-cli` dir
 - `npm install`
-- `npm link`
+- `npm link` -- Remember to restore your old copy of crisper when you're done
 - `cd` into `demo` dir
 - `npm install && bower install`
 - Run `gulp` to setup the demo `dist` directory
@@ -35,7 +35,8 @@ Here are all the steps in list form:
 ## What's next?
 
 **Enable ES6 modules with Babel**
-This is the next thing I want to add. I believe Babel rewrites `import` to something like `_require` so I need to tweak the underlying system to look for these.
+This is the next thing I want to add. Babel rewrites `import` to `require` so it should "just work"
+but I need to figure out when and how to selectively Babel only your files.
 
 **Performance**
 Currently I'm doing all sorts of slow things like writing, and rewriting files because this was the easiest way to prove that this would even work. It could use a major perf/code review, lots of cleanup, and maybe should be doing transforms using streams instead of writing files.

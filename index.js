@@ -63,8 +63,9 @@ module.exports = function(bundle, options) {
         return del(tmpDir);
       }
     })
+    .then(() => {
+      console.log('Live long and prosper');
+    })
     .catch(console.log.bind(console));
-
-    // TODO: How come .finally doesn't work??
 
 };
