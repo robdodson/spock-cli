@@ -40,5 +40,5 @@ The code is currently a mishmash and depends heavily on the CLI. The lib should 
 **WebPack**
 Although I've done so in a totally hacky manner, I think I've proven that it is possible to extract and compile modules into your import bundles. I'd really like to see if this could be made into a WebPack transform as well since that's where all the hotness seems to be these days.
 
-## What about **<script type=module>** ?
+## What about `<script type=module>` ?
 Ultimately I think this tool will be replaced by `<script type=module>` and someone may come along and write a really sick polyfill for that, who knows? But until that happens I'd like to have _some_ way to work with modules and Polymer.
