@@ -15,6 +15,7 @@ const path = require('path');
 const pathExists = require('path-exists');
 const vulcanize = require('./lib/vulcanize-task');
 const crisper = require('./lib/crisper-task');
+const babel = require('./lib/babel-task');
 const rewriteRequires = require('./lib/rewrite-task');
 const shim = require('./lib/shim-task');
 const browserify = require('./lib/browserify-task');
@@ -46,13 +47,16 @@ module.exports = function(bundle, opts) {
     .then(vulcanizedHtml => {
       return crisper(vulcanizedHtml, htmlOutput, opts.skipCrisper);
     })
-    .then((scriptFiles) => {
+    .then(scriptFiles => {
+      return babel(scriptFiles, opts.skipBabel);
+    })
+    .then(scriptFiles => {
       return rewriteRequires(scriptFiles, entryFile, opts.skipRewrite);
     })
-    .then((rewrittenFiles) => {
+    .then(rewrittenFiles => {
       return shim(rewrittenFiles, prefix, opts.skipShim);
     })
-    .then((shimFile) => {
+    .then(shimFile => {
       return browserify(shimFile, jsOutput, opts.skipBrowserify);
     })
     .then(() => {
