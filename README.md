@@ -1,6 +1,6 @@
-# Spock
+# ![spock](media/header.png)
 
-An experimental build tool which lets you use `require` and JavaScript modules in your HTML Imports.
+> ES2015 or CommonJS modules for Polymer
 
 ## Warning
 
