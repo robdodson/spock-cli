@@ -15,6 +15,7 @@ const path = require('path');
 const pathExists = require('path-exists');
 const vulcanize = require('./lib/vulcanize-task');
 const crisper = require('./lib/crisper-task');
+const objectify = require('./lib/objectify-task');
 const babel = require('./lib/babel-task');
 const rewriteRequires = require('./lib/rewrite-task');
 const shim = require('./lib/shim-task');
@@ -27,6 +28,7 @@ module.exports = function(bundle, opts) {
   const htmlOutput = path.join(process.cwd(), opts.output);
   const jsOutput = htmlOutput.replace('.html', '.js');
   const prefix = path.basename(htmlOutput, '.html'); // used for temp files
+  const componentDir = opts.components;
   const entryFile = path.join(process.cwd(), bundle);
 
   // Make sure the passed in entry file is valid
@@ -48,16 +50,19 @@ module.exports = function(bundle, opts) {
       return crisper(vulcanizedHtml, htmlOutput, opts.skipCrisper);
     })
     .then(scriptFiles => {
+      return objectify(scriptFiles, prefix, componentDir, opts.skipObjectify);
+    })
+    .then(scriptFiles => {
       return babel(scriptFiles, opts.skipBabel);
     })
     .then(scriptFiles => {
       return rewriteRequires(scriptFiles, entryFile, opts.skipRewrite);
     })
     .then(rewrittenFiles => {
-      return shim(rewrittenFiles, prefix, opts.skipShim);
+      return shim(rewrittenFiles, opts.skipShim);
     })
-    .then(shimFile => {
-      return browserify(shimFile, jsOutput, opts.skipBrowserify);
+    .then(shimBundle => {
+      return browserify(shimBundle, jsOutput, opts.skipBrowserify);
     })
     .then(() => {
       console.log('Live long and prosper');
@@ -67,6 +72,8 @@ module.exports = function(bundle, opts) {
       //   fs.writeFileSync('profile.cpuprofile', res);
       // });
     })
-    .catch(console.log.bind(console));
+    .catch(err => {
+      console.log(err.stack);
+    });
 
 };

@@ -11,8 +11,10 @@ const cli = meow(`
 
   Options
     -o, --output Output file path. Defaults to dist/elements/elements.{html,js}
+		-c, --components Path to components dir. Defaults to bower_components
     --skip-vulcanize Skips the vulcanization step
     --skip-crisper Skips the crisper step
+		--skip-objectify Skips the objectify step
 		--skip-rewrite Skips the rewrite step
 		--skip-shim Skips the shim step
     --skip-browserify Skips the browserify step
@@ -23,10 +25,12 @@ const cli = meow(`
 	  $ spock app/elements/elements.html -o dist/elements/bundle.html
 `, {
 	alias: {
-    o: 'output'
+    o: 'output',
+		c: 'components'
   },
   default: {
-    output: 'dist/elements/elements.html'
+    output: 'dist/elements/elements.html',
+		components: 'bower_components'
   }
 });
 
