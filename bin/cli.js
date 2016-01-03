@@ -41,4 +41,6 @@ if (cli.input.length === 0) {
 	process.exit(1);
 }
 
-spock(cli.input[0], cli.flags);
+spock(cli.input[0], cli.flags)
+	.then(process.exit.bind(process))
+	.catch(process.exit.bind(process, 1))

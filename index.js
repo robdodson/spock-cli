@@ -42,7 +42,7 @@ module.exports = function(bundle, opts) {
   }
 
   console.time('spock');
-  Promise.resolve()
+  return Promise.resolve()
     .then(() => {
       return vulcanize(entryFile, opts.skipVulcanize)
     })
@@ -74,6 +74,7 @@ module.exports = function(bundle, opts) {
     })
     .catch(err => {
       console.log(err.stack);
+      throw err;
     });
 
 };
