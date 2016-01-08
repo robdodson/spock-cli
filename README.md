@@ -84,3 +84,14 @@ Although I've done so in a totally hacky manner, I think I've proven that it is 
 
 ## What about `<script type=module>` ?
 Ultimately I think this tool will be replaced by `<script type=module>` and someone may come along and write a really sick polyfill for that, who knows? But until that happens I'd like to have _some_ way to work with modules and Polymer.
+
+## Known issues
+
+**Requires a build step**
+It's a bummer but yeah, you have to run the build during development. On a small project it takes about 1-2 seconds to run. Maybe there are clever tricks we can do like using watchify to make this less painful?
+
+**No sourcemaps**
+Vulcanize has [an open issue](https://github.com/Polymer/vulcanize/issues/12) to add some kind of sourcemap support. Our hands are tied here.
+
+**Unable to rewrite inlined scripts**
+_Working on a fix for this!_ If an element depends on an external script file, and that external script file has a `require` call in it, and you bundle it with `--inline-scripts` in Vulcanize, then Spock will attempt to rewrite the `require` path.
