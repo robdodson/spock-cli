@@ -6,6 +6,48 @@
 
 This is a crazy idea that I thought up one night and should not be used by any one on a real project. If you do use it on a real project then you are a bad person and you should feel bad.
 
+## What does it do?
+
+Use CommonJS or ES2015 modules in your HTML Imports, that's what!
+
+**with ES2015**
+```html
+<dom-module id="x-foo">
+  ...
+  <script>
+    import { sayHello } from '../../modules/my-module';
+    import moment from 'moment';
+
+    Polymer({
+      is: 'x-foo',
+      attached: () => {
+        sayHello();
+        console.log('the time is', moment().calendar());
+      }
+    });
+  </script>
+</dom-module>
+```
+
+**with CommonJS**
+```html
+<dom-module id="x-foo">
+  ...
+  <script>
+    var sayHello = require('../../modules/my-module');
+    var moment = require('moment');
+
+    Polymer({
+      is: 'x-foo',
+      attached: function() {
+        sayHello();
+        console.log('the time is', moment().calendar());
+      }
+    });
+  </script>
+</dom-module>
+```
+
 ## Trying it out
 
 - Clone the project
