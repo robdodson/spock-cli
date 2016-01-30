@@ -4,7 +4,11 @@
 
 ## Warning
 
-This is a crazy idea that I thought up one night and should not be used by any one on a real project. If you do use it on a real project then you are a bad person and you should feel bad.
+This is a crazy idea that I thought up one night and should not be used by any one on a real project. At least not yet :)
+
+My intention behind making this public is the hope that the community
+can play with these ideas and discuss better ways to integrate Polymer with
+the broader world of JavaScript modules.
 
 ## What does it do?
 
