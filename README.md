@@ -53,7 +53,7 @@ Use CommonJS or ES2015 modules in your HTML Imports, that's what!
 - Clone the project
 - `cd` into `spock-cli` dir
 - `npm install`
-- `npm link` -- Remember to restore your old copy of crisper when you're done
+- `npm link`
 - `cd` into `demo` dir (you can choose either commonjs or es6)
 - `npm install && bower install`
 - Run `npm test` to setup the demo `dist` directory
@@ -61,7 +61,7 @@ Use CommonJS or ES2015 modules in your HTML Imports, that's what!
 
 ## How does it work?
 
-Vulcanize will put all of your elements in the correct order, meaning all of your scripts are also in the correct order. Using a modified version of Crisper, spock will extract every `<script>` it sees in your vulcanized bundle into a standalone file. Using the original location of the `elements.html` it can then rewrite the `require` statements in your files to use the correct paths to your modules. It then creates a shim file that requires all of these files in the correct order. Then it browserifies (and optionally babelifies) the shim, at this point any `require` statements will have their corresponding JS compiled into the bundle. Finally it moves the vulcanized html and browserified js to your `dist` directory.
+Vulcanize will put all of your elements in the correct order, meaning all of your scripts are also in the correct order. Using a modified version of [Crisper](https://github.com/PolymerLabs/crisper), spock will extract every `<script>` it sees in your vulcanized bundle into a standalone file. Using the original location of the `elements.html` it can then rewrite the `require` statements in your files to use the correct paths to your modules. It then creates a shim file that requires all of these files in the correct order. Then it browserifies and babelifies the shim, at this point any `require` statements will have their corresponding JS compiled into the bundle. Finally it moves the vulcanized html and browserified js to your `dist` directory.
 
 Here are all the steps in list form:
 
@@ -91,7 +91,7 @@ Ultimately I think this tool will be replaced by `<script type=module>` and some
 It's a bummer but yeah, you have to run the build during development. On a small project it takes about 1-2 seconds to run. Maybe there are clever tricks we can do like using watchify to make this less painful?
 
 **No sourcemaps**
-Vulcanize has [an open issue](https://github.com/Polymer/vulcanize/issues/12) to add some kind of sourcemap support. Our hands are tied here.
+Vulcanize has [an open issue](https://github.com/Polymer/vulcanize/issues/12) to add some kind of sourcemap support. This would be useful for debugging the built bundle at dev time and also could remove some of the hacky things we do with assetPath to figure out where our source elements are.
 
 **Unable to rewrite inlined scripts**
-_Working on a fix for this!_ If an element depends on an external script file, and that external script file has a `require` call in it, and you bundle it with `--inline-scripts` in Vulcanize, then Spock will attempt to rewrite the `require` path.
+_Working on a fix for this!_ If an element depends on an external script file, and that external script file has a `require` call in it, and you bundle it with `--inline-scripts` in Vulcanize, then Spock will attempt to rewrite the `require` path but it _won't_ know where the inline script came from. Vulcanize (by way of [hydrolysis](https://github.com/Polymer/hydrolysis)) should have access to this information but right now it's not being exposed.
